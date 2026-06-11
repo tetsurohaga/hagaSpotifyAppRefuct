@@ -1,0 +1,26 @@
+{
+  "name": "spotify-app-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Spotify Now Playing app API (Hono on AWS Lambda)",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "tsx watch src/local.ts",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.40.0",
+    "@aws-sdk/client-dynamodb": "^3.654.0",
+    "@aws-sdk/client-ssm": "^3.654.0",
+    "@aws-sdk/lib-dynamodb": "^3.654.0",
+    "hono": "^4.6.3"
+  },
+  "devDependencies": {
+    "@hono/node-server": "^1.13.1",
+    "@types/node": "^20.16.5",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2"
+  }
+}
