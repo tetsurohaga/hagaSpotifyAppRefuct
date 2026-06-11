@@ -1,0 +1,250 @@
+/* 既存 hagawork_SpotifyApp/static/css/style.css を移植。
+   フォントパスのみ /fonts/... に調整（SvelteKit static 配信に合わせる）。
+   末尾に Markdown 描画用の最小スタイルを追加。 */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+
+.container {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    height: 90%;
+    max-width: 1300px;
+    overflow: hidden;
+    width: 90%;
+}
+
+@font-face {
+    font-family: 'MinecraftFifty';
+    src: url('/fonts/MinecraftFifty-Solid.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.left-panel, .right-panel {
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.left-panel {
+    background-color: #eff6f8;
+    border-right: 1px solid #ccc;
+    overflow-y: auto; /* ここでスクロールを有効にする */
+    width: 40%;
+}
+
+.right-panel {
+    width: 60%;
+    background-color: #fffffc;
+    overflow-y: auto; /* ここでスクロールを有効にする */
+    height: 100%; /* 右パネルの高さを100%に設定 */
+}
+
+#artist-title {
+    color: #c9be22;
+    font-family: 'MinecraftFifty', Arial, sans-serif;
+    font-size: 2em; /* h2 と同じフォントサイズ */
+    font-weight: bold; /* h2 と同じような太字 */
+    margin: 0.67em 0; /* h2 のデフォルトのマージンに合わせる */
+    text-align: center; /* テキストを中央配置 */
+}
+
+#currently-playing-title {
+    color: #c9be22;
+    font-family: 'MinecraftFifty', Arial, sans-serif;
+    font-size: 2em; /* h2 と同じフォントサイズ */
+    font-weight: bold; /* h2 と同じような太字 */
+    margin: 0.67em 0; /* h2 のデフォルトのマージンに合わせる */
+    text-align: center; /* テキストを中央配置 */
+}
+
+#track-info {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#album-image {
+    display: block;
+    margin-top: 20px;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ccc;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+h2 {
+    font-size: 22px;
+    color: #ff6600;
+}
+
+#get-track {
+    background-color: #ff6600;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    display: block;
+    font-size: 16px;
+    margin: 0 auto;
+    padding: 10px 20px;
+    text-align: center;
+    width: auto;     /* ボタンの幅を自動調整 */
+}
+
+button.get-track:hover {
+    background-color: #ffe0c0;
+}
+
+#artist-info {
+    margin-top: 20px;
+    align-items: center;
+}
+
+.artist-card {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column; /* 要素を縦に並べる */
+    align-items: center;    /* 要素を中央に配置 */
+}
+
+.artist-card h3 {
+    font-size: 20px;
+    margin: 0 0 5px;
+}
+
+.artist-card img {
+    max-width: 640px;
+    height: auto;
+    margin-bottom: 10px; /* 画像の下に余白を追加 */
+    vertical-align: middle;
+    border: 1px solid #ccc;
+}
+
+.artist-description {
+    display: block;  /* 要素をブロックレベルに変更して、画像の下に配置 */
+    text-align: center; /* テキストを中央揃え */
+    margin-bottom: 10px; /* 下に余白を追加 */
+}
+
+/* ボタンの基本スタイル */
+button.know-more-button {
+    background-color: #690dd2;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: block;  /* ボタンをブロック要素にして縦に並べる */
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    width: auto;     /* ボタンの幅を自動調整 */
+}
+
+/* ホバー時のスタイル */
+button.know-more-button:hover {
+    background-color: #9192f9; /* ホバー時に色を少し明るく */
+}
+
+/* ボタンの基本スタイル */
+button.regenerate-button {
+    background-color: #fe3884;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: block;  /* ボタンをブロック要素にして縦に並べる */
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    width: auto;     /* ボタンの幅を自動調整 */
+}
+
+/* ホバー時のスタイル */
+button.regenerate-button:hover {
+    background-color: #fdb8eb; /* ホバー時に色を少し暗く */
+}
+
+body.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* 中央から上端寄りに配置 */
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0; /* 背景色を薄いグレーに設定 */
+    font-family: Arial, sans-serif;
+    padding-top: 10vh; /* 上部に余白を追加 */
+}
+
+.login-container .login-title {
+    color: #4b0082;
+    font-size: 4em; /* フォントサイズを大きく設定 */
+    text-align: center;
+    margin-bottom: 30px;
+    font-family: 'MinecraftFifty', Arial, sans-serif; /* 新しいフォントを適用 */
+}
+
+.login-container #login {
+    display: block;
+    margin: 0 auto;
+    padding: 15px 30px;
+    font-size: 1.5em;
+    color: #4b0082; /* ボタンのテキスト色*/
+    background-color: #fcf951; /* ボタンの背景色 */
+    border: 2px solid #edffb2; /* ボタンの枠 */
+    border-radius: 30px; /* ボタンを角丸にする */
+    cursor: pointer;
+    font-family: 'MinecraftFifty', Arial, sans-serif;
+}
+
+.login-container #login:hover {
+    background-color: #90ee90; /* ボタンホバー時の背景色 */
+    color: rgb(255, 242, 242); /* ホバー時のテキスト色 */
+}
+
+/* ジャンル表示（既存はカスタム要素 artist-genre。Svelte では span で表現） */
+.artist-genre {
+    display: block;
+    text-align: center;
+    color: #555;
+    margin-bottom: 6px;
+}
+
+/* Markdown 描画。流れる文章基調なので最小限に整える。 */
+.markdown-body {
+    text-align: left;
+    line-height: 1.7;
+    max-width: 640px;
+    margin: 0 auto;
+}
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3 {
+    color: #ff6600;
+    margin: 0.6em 0 0.3em;
+}
+.markdown-body p {
+    margin: 0.5em 0;
+}
+.markdown-body a {
+    color: #690dd2;
+}
