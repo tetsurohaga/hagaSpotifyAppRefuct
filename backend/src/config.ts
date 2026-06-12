@@ -13,8 +13,8 @@ export const SPOTIFY_SCOPE =
 export const FRONTEND_REDIRECT_PATH =
   process.env.FRONTEND_REDIRECT_PATH ?? "/now-playing";
 
-// Claude 設定。
-export const CLAUDE_MODEL = process.env.CLAUDE_MODEL ?? "claude-opus-4-8";
+// Claude 設定。解説生成は応答速度重視で Sonnet 4.6 を既定に（環境変数で上書き可）。
+export const CLAUDE_MODEL = process.env.CLAUDE_MODEL ?? "claude-sonnet-4-6";
 // Web 検索ツールでの情報グラウンディング（フェーズ4）。既定オフ。
 export const CLAUDE_WEB_SEARCH = process.env.CLAUDE_WEB_SEARCH === "true";
 

@@ -9,8 +9,6 @@ import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
-import { HttpApi } from "aws-cdk-lib/aws-apigatewayv2";
-import { HttpLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations";
 
 const ARTISTS_TABLE = "spotiapp_artists";
 
@@ -34,7 +32,9 @@ export class SpotifyAppStack extends cdk.Stack {
       handler: "handler",
       depsLockFilePath: path.join(__dirname, "../../backend/package-lock.json"),
       memorySize: 512,
-      timeout: cdk.Duration.seconds(30),
+      // Function URL 経由で同期実行する。API GW(HTTP API) の 30s 上限を外したぶん、
+      // Claude 解説生成の余裕として 60s に拡張（CloudFront オリジン応答上限と合わせる）。
+      timeout: cdk.Duration.seconds(60),
       environment: {
         ARTISTS_TABLE,
         SPOTIFY_SCOPE:
@@ -81,11 +81,14 @@ export class SpotifyAppStack extends cdk.Stack {
       }),
     );
 
-    // --- API Gateway: HTTP API（Lambda 統合。全パスを Lambda へ） ---
-    const httpApi = new HttpApi(this, "HttpApi", {
-      defaultIntegration: new HttpLambdaIntegration("ApiIntegration", apiFn),
+    // --- Lambda Function URL: API Gateway を介さず Lambda を直接公開 ---
+    // HTTP API の統合タイムアウト(30s 固定・引き上げ不可)を回避するため Function URL を採用。
+    // authType=NONE は現状の HTTP API（認可なし公開）と同等の公開範囲。アプリ側 Cookie 認証で保護。
+    const fnUrl = apiFn.addFunctionUrl({
+      authType: lambda.FunctionUrlAuthType.NONE,
     });
-    const apiDomain = `${httpApi.apiId}.execute-api.${this.region}.amazonaws.com`;
+    // CloudFront オリジン用にホスト名のみ取り出す（"https://" と末尾 "/" を除去）。
+    const apiDomain = cdk.Fn.select(2, cdk.Fn.split("/", fnUrl.url));
 
     // --- CloudFront: 単一ドメイン。デフォルト→S3、/api/*→HTTP API ---
     const distribution = new cloudfront.Distribution(this, "Distribution", {
@@ -101,6 +104,8 @@ export class SpotifyAppStack extends cdk.Stack {
         "/api/*": {
           origin: new origins.HttpOrigin(apiDomain, {
             protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
+            // オリジン応答タイムアウトを最大の 60s に拡張（Claude 生成の余裕）。
+            readTimeout: cdk.Duration.seconds(60),
           }),
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
@@ -145,6 +150,6 @@ export class SpotifyAppStack extends cdk.Stack {
       value: distribution.distributionId,
     });
     new cdk.CfnOutput(this, "SiteBucketName", { value: siteBucket.bucketName });
-    new cdk.CfnOutput(this, "ApiEndpoint", { value: httpApi.apiEndpoint });
+    new cdk.CfnOutput(this, "ApiEndpoint", { value: fnUrl.url });
   }
 }

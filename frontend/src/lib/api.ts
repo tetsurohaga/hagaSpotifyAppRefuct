@@ -29,6 +29,18 @@ export async function getArtistProfiles(): Promise<Artist[]> {
   return (await r.json()) as Artist[];
 }
 
+// 未生成アーティストの解説を1人ぶん生成して取得する（async 化）。
+export async function generateBiography(id: string): Promise<string> {
+  const u = `/api/generate-biography?artist_id=${encodeURIComponent(id)}`;
+  const r = await fetch(u, opts);
+  if (r.status === 401) {
+    toLogin();
+    return "";
+  }
+  if (!r.ok) throw new Error(`generate-biography: ${r.status}`);
+  return ((await r.json()) as { biography: string }).biography;
+}
+
 export async function regenerateBiography(
   id: string,
   name: string,

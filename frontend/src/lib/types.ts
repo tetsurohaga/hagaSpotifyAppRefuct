@@ -9,6 +9,6 @@ export type Artist = {
   name: string;
   image: string;
   genres: string[];
-  description: string; // Markdown 文字列
+  description: string | null; // Markdown 文字列。null は未生成（フロントで個別生成する）
   knowmore: string;
 };

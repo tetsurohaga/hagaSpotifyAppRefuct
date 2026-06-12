@@ -1,19 +1,33 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import type { Artist } from "$lib/types";
   import Markdown from "./Markdown.svelte";
-  import { regenerateBiography } from "$lib/api";
+  import { generateBiography, regenerateBiography } from "$lib/api";
 
   let { artist }: { artist: Artist } = $props();
 
-  // 解説はローカル state として保持し、再生成時に差し替える。
+  // 解説はローカル state として保持し、（再）生成時に差し替える。
   // 初期値をプロップから取り込むのは意図的（カードは artist.id でキー付けされ identity 安定）。
   // svelte-ignore state_referenced_locally
-  let description = $state(artist.description);
+  let description = $state<string | null>(artist.description);
   let regenerating = $state(false);
 
   function knowMore() {
     window.open(artist.knowmore, "_blank");
   }
+
+  // 未生成（null）ならマウント時に1人ぶん生成する（async 化）。
+  onMount(async () => {
+    if (description !== null) return;
+    regenerating = true;
+    try {
+      description = await generateBiography(artist.id);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      regenerating = false;
+    }
+  });
 
   async function regenerate() {
     regenerating = true;
@@ -36,7 +50,7 @@
   <span class="artist-genre">Genres: "{artist.genres.join(", ")}"</span>
 
   <div class="artist-description">
-    {#if regenerating}
+    {#if regenerating || description === null}
       Searching...
     {:else}
       <Markdown source={description} />

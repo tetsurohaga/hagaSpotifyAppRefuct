@@ -87,13 +87,22 @@ function authHeaders(accessToken: string): Record<string, string> {
 }
 
 export type SpotifyArtistRef = { id: string; name: string };
+export type CurrentlyPlayingItem = {
+  name: string;
+  album: { images: { url: string }[] };
+  artists: SpotifyArtistRef[];
+};
 export type CurrentlyPlaying = {
   status: 200 | 204;
-  item?: {
-    name: string;
-    album: { images: { url: string }[] };
-    artists: SpotifyArtistRef[];
-  };
+  item?: CurrentlyPlayingItem;
+};
+
+// currently-playing エンドポイントのレスポンス。トラック情報は item にネストされる。
+// 再生種別が track 以外（episode 等）の場合 artists を持たないため除外する。
+type CurrentlyPlayingResponse = {
+  is_playing?: boolean;
+  currently_playing_type?: string;
+  item?: (CurrentlyPlayingItem & { artists?: SpotifyArtistRef[] }) | null;
 };
 
 /** 再生中トラック取得。204（再生なし）と 200 を区別して返す。 */
@@ -107,8 +116,12 @@ export async function getCurrentlyPlaying(
   if (!res.ok) {
     throw new Error(`Spotify currently-playing failed: ${res.status} ${await res.text()}`);
   }
-  const data = (await res.json()) as CurrentlyPlaying["item"];
-  return { status: 200, item: data };
+  const data = (await res.json()) as CurrentlyPlayingResponse;
+  // item が無い / track 以外（artists を持たない）の場合は再生なし扱い。
+  if (!data.item || !Array.isArray(data.item.artists)) {
+    return { status: 204 };
+  }
+  return { status: 200, item: data.item as CurrentlyPlayingItem };
 }
 
 export type SpotifyArtist = {
