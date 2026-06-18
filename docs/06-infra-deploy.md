@@ -8,8 +8,8 @@ IaC は AWS CDK（TypeScript）。リージョンは ap-northeast-1。
 | --- | --- | --- |
 | S3 バケット | SvelteKit 静的ビルド配置 | 非公開。OAC で CloudFront からのみ参照 |
 | CloudFront ディストリビューション | 配信・単一ドメイン化 | 標準ドメイン（`*.cloudfront.net`）でまず運用 |
-| Lambda 関数 | API（TypeScript/Hono） | Node.js 20、メモリ 256–512MB、タイムアウト 30s |
-| API Gateway（HTTP API） | Lambda 公開 | CloudFront の `/api/*` オリジン |
+| Lambda 関数 | API（TypeScript/Hono） | Node.js 20、メモリ 256–512MB、タイムアウト 60s |
+| Lambda Function URL | Lambda 公開 | CloudFront の `/api/*` オリジン（`authType=NONE`、Cookie 認証で保護） |
 | DynamoDB テーブル（既存） | `spotiapp_artists` | **import のみ**。新規作成しない |
 | SSM パラメータ（既存+新規） | シークレット | 下記 6.4 |
 | IAM ロール（Lambda 実行） | 権限 | DynamoDB / SSM 最小権限 |
@@ -18,7 +18,7 @@ IaC は AWS CDK（TypeScript）。リージョンは ap-northeast-1。
 
 | パスパターン | オリジン | 備考 |
 | --- | --- | --- |
-| `/api/*` | API Gateway（HTTP API） | Cookie / クエリ / 必要ヘッダをフォワード。キャッシュ無効 |
+| `/api/*` | Lambda Function URL | Cookie / クエリ / 必要ヘッダをフォワード。キャッシュ無効 |
 | デフォルト `*` | S3（OAC） | 静的アセット。`index.html` フォールバック（SPA） |
 
 - `/api/*` ビヘイビア:
@@ -81,7 +81,7 @@ cd frontend && npm install && npm run build      # → frontend/build
 # 2. インフラ（初回）
 cd ../infra && npm install
 npx cdk bootstrap                                 # 初回のみ
-npx cdk deploy                                    # S3/CloudFront/APIGW/Lambda 作成
+npx cdk deploy                                    # S3/CloudFront/Lambda Function URL/Lambda 作成
 
 # 3. ビルド成果物を S3 へ同期（CDK の BucketDeployment で自動化推奨）
 #    → CDK スタックに s3deploy.BucketDeployment を含め、cdk deploy で配置

@@ -11,7 +11,7 @@
 | 静的ホスティング | AWS S3 |
 | CDN / 配信 | AWS CloudFront |
 | バックエンド | TypeScript（Node.js 20）on AWS Lambda（Hono ルーター） |
-| API 公開 | API Gateway HTTP API（CloudFront の `/api/*` ビヘイビア経由） |
+| API 公開 | Lambda Function URL（CloudFront の `/api/*` ビヘイビア経由） |
 | データベース | DynamoDB（**既存テーブル `spotiapp_artists` を流用**） |
 | 主要外部API | Spotify Web API（既存どおり） |
 | 生成AI | Claude API（`@anthropic-ai/sdk` / `claude-opus-4-8`）※ Perplexity から置換 |

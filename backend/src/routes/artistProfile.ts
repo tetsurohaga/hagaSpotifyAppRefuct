@@ -40,7 +40,7 @@ artistProfileRoutes.get("/artist-profile", async (c) => {
       const genres =
         artist.genres && artist.genres.length > 0
           ? artist.genres
-          : ["genres undifined"];
+          : ["genres undefined"];
 
       const biography = await getBiography(ref.id); // 未生成なら null
 
@@ -76,7 +76,7 @@ artistProfileRoutes.get("/generate-biography", async (c) => {
   const genres =
     artist.genres && artist.genres.length > 0
       ? artist.genres
-      : ["genres undifined"];
+      : ["genres undefined"];
 
   const biography = await generateBiography(artist.name);
   const timestamp = String(Math.floor(Date.now() / 1000));

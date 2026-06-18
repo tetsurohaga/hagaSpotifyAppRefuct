@@ -32,8 +32,8 @@ export class SpotifyAppStack extends cdk.Stack {
       handler: "handler",
       depsLockFilePath: path.join(__dirname, "../../backend/package-lock.json"),
       memorySize: 512,
-      // Function URL 経由で同期実行する。API GW(HTTP API) の 30s 上限を外したぶん、
-      // Claude 解説生成の余裕として 60s に拡張（CloudFront オリジン応答上限と合わせる）。
+      // Function URL 経由で同期実行する。Claude 解説生成の余裕として 60s に設定
+      // （CloudFront オリジン応答上限と合わせる）。
       timeout: cdk.Duration.seconds(60),
       environment: {
         ARTISTS_TABLE,
@@ -81,16 +81,16 @@ export class SpotifyAppStack extends cdk.Stack {
       }),
     );
 
-    // --- Lambda Function URL: API Gateway を介さず Lambda を直接公開 ---
-    // HTTP API の統合タイムアウト(30s 固定・引き上げ不可)を回避するため Function URL を採用。
-    // authType=NONE は現状の HTTP API（認可なし公開）と同等の公開範囲。アプリ側 Cookie 認証で保護。
+    // --- Lambda Function URL: Lambda を直接公開（CloudFront の /api/* オリジン） ---
+    // 同期実行で最大 60s まで処理できるよう Function URL を採用。
+    // authType=NONE で公開し、アプリ側 Cookie 認証で保護する。
     const fnUrl = apiFn.addFunctionUrl({
       authType: lambda.FunctionUrlAuthType.NONE,
     });
     // CloudFront オリジン用にホスト名のみ取り出す（"https://" と末尾 "/" を除去）。
     const apiDomain = cdk.Fn.select(2, cdk.Fn.split("/", fnUrl.url));
 
-    // --- CloudFront: 単一ドメイン。デフォルト→S3、/api/*→HTTP API ---
+    // --- CloudFront: 単一ドメイン。デフォルト→S3、/api/*→Lambda Function URL ---
     const distribution = new cloudfront.Distribution(this, "Distribution", {
       defaultRootObject: "index.html",
       defaultBehavior: {
@@ -111,7 +111,7 @@ export class SpotifyAppStack extends cdk.Stack {
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
           cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
-          // Cookie / クエリ / ヘッダを転送（Host は除外。APIGW は自身の Host が必要）。
+          // Cookie / クエリ / ヘッダを転送（Host は除外。Function URL は自身の Host が必要）。
           originRequestPolicy:
             cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
         },

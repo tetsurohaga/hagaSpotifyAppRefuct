@@ -9,5 +9,5 @@ new SpotifyAppStack(app, "SpotifyAppStack", {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION ?? "ap-northeast-1",
   },
-  description: "Spotify Now Playing app (S3+CloudFront+APIGW+Lambda, DynamoDB import)",
+  description: "Spotify Now Playing app (S3+CloudFront+Lambda Function URL+Lambda, DynamoDB import)",
 });

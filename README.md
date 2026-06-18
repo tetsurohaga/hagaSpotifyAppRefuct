@@ -9,7 +9,7 @@ Spotify の「現在再生中の曲」とそのアーティスト解説（生成
 | --- | --- | --- |
 | [`frontend/`](./frontend) | 静的SPA（ログイン / 再生中画面） | SvelteKit（adapter-static）, marked + DOMPurify |
 | [`backend/`](./backend) | API（`/api/*`） | TypeScript / Hono on AWS Lambda |
-| [`infra/`](./infra) | IaC | AWS CDK（S3 + CloudFront + API Gateway + Lambda、DynamoDB は import） |
+| [`infra/`](./infra) | IaC | AWS CDK（S3 + CloudFront + Lambda Function URL + Lambda、DynamoDB は import） |
 | [`docs/`](./docs) | 設計書 | — |
 
 ## 機能

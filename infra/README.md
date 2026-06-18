@@ -1,6 +1,6 @@
 # infra — AWS CDK
 
-S3 + CloudFront + API Gateway(HTTP API) + Lambda を定義。DynamoDB `spotiapp_artists` は
+S3 + CloudFront + Lambda Function URL + Lambda を定義。DynamoDB `spotiapp_artists` は
 **import のみ**（新規作成しない）。リージョン: ap-northeast-1。
 
 ## 前提
@@ -24,7 +24,7 @@ cd infra && npm install
 # 初回のみ
 AWS_PROFILE=hagauser1 npx cdk bootstrap
 
-# デプロイ（S3/CloudFront/APIGW/Lambda 作成 + フロント配置）
+# デプロイ（S3/CloudFront/Lambda Function URL/Lambda 作成 + フロント配置）
 AWS_PROFILE=hagauser1 npx cdk deploy
 ```
 

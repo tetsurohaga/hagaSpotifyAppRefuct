@@ -8,7 +8,7 @@
   (SvelteKit SPA) ──▶│                                             │
                     │  ビヘイビア:                                  │
                     │   - デフォルト ( /, /*.js, /*.css ... ) ─────┼──▶ S3 (静的ビルド)
-                    │   - /api/*                            ───────┼──▶ API Gateway (HTTP API)
+                    │   - /api/*                            ───────┼──▶ Lambda Function URL
                     └─────────────────────────────────────────────┘                │
                                                                                     ▼
                                                                               Lambda (TS / Hono)
@@ -125,9 +125,9 @@
 ## 2.4 技術選定の補足
 
 - **Hono**: Lambda 上で軽量・型安全にルーティングできるフレームワーク。
-  `hono/aws-lambda` アダプタで API Gateway HTTP API イベントを直接処理可能。
+  `hono/aws-lambda` アダプタで Lambda Function URL（ペイロード2.0）イベントを直接処理可能。
   単一 Lambda 内でルーター分割でき、初期構築が速い。
 - **adapter-static（SvelteKit）**: 完全静的出力。SPA フォールバック（`fallback: 'index.html'`）を
   有効化し、クライアントサイドルーティングで動かす。SSR は使わない。
 - **marked + DOMPurify**: Claude が返す Markdown を HTML 化し、サニタイズして表示。
-- **AWS CDK（TypeScript）**: バックエンドと言語を統一。S3/CloudFront/APIGW/Lambda/IAM を一括定義。
+- **AWS CDK（TypeScript）**: バックエンドと言語を統一。S3/CloudFront/Lambda Function URL/Lambda/IAM を一括定義。

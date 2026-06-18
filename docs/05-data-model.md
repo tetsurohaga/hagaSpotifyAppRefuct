@@ -22,7 +22,7 @@
 
 > **既存スキーマ準拠の注意点**
 > - `genres` は **String Set（SS）**。空配列は不可（DynamoDB の Set は空を許さない）ため、
->   空ジャンル時は `["genres undifined"]` を入れる（既存挙動）。
+>   空ジャンル時は `["genres undefined"]` を入れる（既存挙動）。
 > - `registration_timestamp` / `request_count` は数値型（N）。`Date.now()/1000` を整数文字列で。
 > - `biography` には Markdown を保存する。既存の（Perplexity 由来）プレーンテキストのレコードが
 >   混在するが、フロントの Markdown 描画はプレーンテキストもそのまま表示できるため互換性に問題なし。

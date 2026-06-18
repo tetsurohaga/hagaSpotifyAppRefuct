@@ -38,7 +38,7 @@ export async function registerArtist(params: {
   timestamp: string;
 }): Promise<void> {
   // DynamoDB の Set は空を許さない。空ジャンルは呼び出し側でフォールバック済みだが念のため保証。
-  const genres = params.genres.length > 0 ? params.genres : ["genres undifined"];
+  const genres = params.genres.length > 0 ? params.genres : ["genres undefined"];
   await doc.send(
     new PutCommand({
       TableName: ARTISTS_TABLE,

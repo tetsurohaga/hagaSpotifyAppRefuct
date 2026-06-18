@@ -49,8 +49,8 @@
    - S3（非公開）+ OAC。
    - `NodejsFunction`（backend をバンドル）＋実行ロール（SSM/DynamoDB 最小権限）。
    - DynamoDB 既存テーブルを `fromTableName` で import し grant。
-   - HTTP API（Lambda 統合）。
-   - CloudFront（デフォルト→S3、`/api/*`→API GW、SPA フォールバック）。
+   - Lambda Function URL（`authType=NONE`、Cookie 認証で保護）。
+   - CloudFront（デフォルト→S3、`/api/*`→Lambda Function URL、SPA フォールバック）。
    - `BucketDeployment` で `frontend/build` を配置＋invalidation。
 3. `cdk bootstrap`（初回）→ `cdk deploy`。
 4. CloudFront ドメイン確定 → SSM `SPOTIFY_REDIRECT_URI` 設定 →
@@ -85,4 +85,4 @@
 - Claude は学習データ範囲外/マイナーなアーティストで不正確になりうる。
   → `web_search` ツールでグラウンディング（フェーズ4）。まず動作優先で無しでも可。
 - Spotify のリフレッシュトークンは長期有効だが失効時は再ログインへ誘導（401→`/`）。
-- `genres` の SS 書き込みは空配列不可。`["genres undifined"]` フォールバックを必ず通す。
+- `genres` の SS 書き込みは空配列不可。`["genres undefined"]` フォールバックを必ず通す。
