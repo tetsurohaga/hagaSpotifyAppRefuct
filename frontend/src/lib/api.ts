@@ -1,7 +1,7 @@
 // API フェッチラッパ。すべて同一ドメインの /api/* を相対パスで叩く。
 // Cookie は same-site で自動送信される。401 はログイン画面へ誘導。
 
-import type { Track, Artist } from "./types";
+import type { Track, Artist, StickyNote } from "./types";
 
 const opts: RequestInit = { credentials: "same-origin" };
 
@@ -53,4 +53,35 @@ export async function regenerateBiography(
   }
   if (!r.ok) throw new Error(`regenerate: ${r.status}`);
   return ((await r.json()) as { new_biography: string }).new_biography;
+}
+
+// 付箋を1枚追加し、サーバが採番したノート（id 付き）を返す。
+export async function addStickyNote(
+  artistId: string,
+  text: string,
+  color: string,
+): Promise<StickyNote | null> {
+  const r = await fetch("/api/sticky-notes", {
+    ...opts,
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ artist_id: artistId, text, color }),
+  });
+  if (r.status === 401) return toLogin();
+  if (!r.ok) throw new Error(`sticky-notes POST: ${r.status}`);
+  return (await r.json()) as StickyNote;
+}
+
+// 付箋を1枚削除。
+export async function deleteStickyNote(
+  artistId: string,
+  noteId: string,
+): Promise<void> {
+  const u = `/api/sticky-notes?artist_id=${encodeURIComponent(artistId)}&note_id=${encodeURIComponent(noteId)}`;
+  const r = await fetch(u, { ...opts, method: "DELETE" });
+  if (r.status === 401) {
+    toLogin();
+    return;
+  }
+  if (!r.ok && r.status !== 204) throw new Error(`sticky-notes DELETE: ${r.status}`);
 }

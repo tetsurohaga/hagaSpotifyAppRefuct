@@ -229,6 +229,213 @@ body.login-page {
     margin-bottom: 6px;
 }
 
+/* =========================================================
+   Sticky Note ボード（今回の主役機能）
+   Biography より上・目立つ背景色で「主要機能」であることを示す。
+   ========================================================= */
+.sticky-board {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 24px 20px 28px;
+    /* 淡く明るい・楽しいパステル（ピンク→クリーム→ミント）で主役感を出す */
+    background: linear-gradient(135deg, #fff0f6 0%, #fff7e0 50%, #e7f8ef 100%);
+    border-top: 2px solid #ffd9ea;
+    border-bottom: 2px solid #ffd9ea;
+}
+
+.sticky-title {
+    color: #c9be22;
+    font-family: 'MinecraftFifty', Arial, sans-serif;
+    font-size: 2.2em; /* Artist Info より一回り大きく＝主役 */
+    font-weight: bold;
+    margin: 0.2em 0 0.6em;
+    text-align: center;
+    letter-spacing: 0.02em;
+}
+
+.sticky-empty {
+    text-align: center;
+    color: #2b6b59;
+    margin: 0;
+}
+
+/* アーティスト単位の付箋ボード（複数アーティスト時は縦に積む） */
+.sticky-artist + .sticky-artist {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px dashed #8fdcc6;
+}
+
+.sticky-artist-name {
+    text-align: center;
+    margin: 0 0 12px;
+    color: #2b6b59;
+    font-size: 18px;
+}
+
+/* 付箋作成フォーム */
+.sticky-composer {
+    max-width: 640px;
+    margin: 0 auto 20px;
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 14px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.sticky-input {
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 15px;
+    font-family: 'Zen Maru Gothic', 'Yomogi', sans-serif;
+}
+
+.sticky-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.sticky-colors {
+    display: flex;
+    gap: 8px;
+}
+
+.sticky-swatch {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.1s ease;
+}
+
+.sticky-swatch.selected {
+    border-color: #333;
+    transform: scale(1.15);
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #333;
+}
+
+.sticky-counter {
+    color: #555;
+    font-size: 13px;
+    margin-left: auto;
+}
+
+.sticky-counter.over {
+    color: #d12c2c;
+    font-weight: bold;
+}
+
+.sticky-add {
+    background-color: #ff6600;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 9px 18px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.sticky-add:hover:not(:disabled) {
+    background-color: #ff8a3d;
+}
+
+.sticky-add:disabled {
+    background-color: #ffc7a3;
+    cursor: not-allowed;
+}
+
+/* 付箋の並び：横スクロール（画面に入りきらない数を貼れる） */
+.sticky-scroll {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    padding: 14px 4px 18px;
+    scroll-snap-type: x proximity;
+    align-items: flex-start;
+}
+
+.sticky-note {
+    position: relative;
+    flex: 0 0 auto;
+    width: 180px;
+    min-height: 150px;
+    padding: 16px 14px;
+    border-radius: 2px;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.18);
+    scroll-snap-align: start;
+    /* 付箋らしく少しだけ傾ける */
+    transform: rotate(-1.5deg);
+}
+
+.sticky-note:nth-child(even) {
+    transform: rotate(1.5deg);
+}
+
+.sticky-note-text {
+    margin: 0;
+    /* 手書き風ポップフォント（読みやすい丸ゴにフォールバック） */
+    font-family: 'Yomogi', 'Zen Maru Gothic', 'Comic Sans MS', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #3a3a3a;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+.sticky-remove {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    width: 20px;
+    height: 20px;
+    line-height: 18px;
+    text-align: center;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.12);
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.sticky-remove:hover {
+    background: rgba(0, 0, 0, 0.25);
+}
+
+/* =========================================================
+   Biography セクション（付箋ボードの下に配置）
+   ========================================================= */
+.bio-panel {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px;
+    background-color: #fffffc;
+}
+
+#bio-title {
+    color: #c9be22;
+    font-family: 'MinecraftFifty', Arial, sans-serif;
+    font-size: 2em;
+    font-weight: bold;
+    margin: 0.67em 0;
+    text-align: center;
+}
+
+#bio-info {
+    margin-top: 20px;
+    align-items: center;
+}
+
 /* Markdown 描画。流れる文章基調なので最小限に整える。 */
 .markdown-body {
     text-align: left;

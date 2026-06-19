@@ -6,6 +6,7 @@ import { handle } from "hono/aws-lambda";
 import { authRoutes } from "./routes/auth.js";
 import { currentlyPlayingRoutes } from "./routes/currentlyPlaying.js";
 import { artistProfileRoutes } from "./routes/artistProfile.js";
+import { stickyNoteRoutes } from "./routes/stickyNotes.js";
 
 const app = new Hono();
 
@@ -16,6 +17,7 @@ app.get("/api/health", (c) => c.json({ ok: true }));
 app.route("/api", authRoutes);
 app.route("/api", currentlyPlayingRoutes);
 app.route("/api", artistProfileRoutes);
+app.route("/api", stickyNoteRoutes);
 
 // 想定外エラーは 500 JSON で返す。
 app.onError((err, c) => {

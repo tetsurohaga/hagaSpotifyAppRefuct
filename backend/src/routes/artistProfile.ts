@@ -11,6 +11,7 @@ import {
 } from "../services/spotify.js";
 import {
   getBiography,
+  getStickyNotes,
   registerArtist,
   updateBiography,
 } from "../services/artists.js";
@@ -42,7 +43,11 @@ artistProfileRoutes.get("/artist-profile", async (c) => {
           ? artist.genres
           : ["genres undefined"];
 
-      const biography = await getBiography(ref.id); // 未生成なら null
+      // 解説（未生成なら null）と付箋を並行取得。
+      const [biography, stickyNotes] = await Promise.all([
+        getBiography(ref.id),
+        getStickyNotes(ref.id),
+      ]);
 
       return {
         id: ref.id,
@@ -51,6 +56,7 @@ artistProfileRoutes.get("/artist-profile", async (c) => {
         genres,
         description: biography,
         knowmore: createKnowMoreUrl(artist.name),
+        stickyNotes,
       };
     }),
   );

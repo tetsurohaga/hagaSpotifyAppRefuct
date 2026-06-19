@@ -1,4 +1,5 @@
 <script lang="ts">
+  // アーティストの解説（Biography）。未生成ならマウント時に1人ぶん生成する。
   import { onMount } from "svelte";
   import type { Artist } from "$lib/types";
   import Markdown from "./Markdown.svelte";
@@ -44,10 +45,6 @@
 
 <div class="artist-card">
   <h3>{artist.name}</h3>
-  {#if artist.image}
-    <img src={artist.image} alt={`${artist.name} Image`} />
-  {/if}
-  <span class="artist-genre">Genres: "{artist.genres.join(", ")}"</span>
 
   <div class="artist-description">
     {#if regenerating || description === null}
