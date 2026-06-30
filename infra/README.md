@@ -3,6 +3,9 @@
 S3 + CloudFront + Lambda Function URL + Lambda を定義。DynamoDB `spotiapp_artists` は
 **import のみ**（新規作成しない）。リージョン: ap-northeast-1。
 
+> **このスタックの AWS 構成図は [`../docs/architecture.drawio`](../docs/architecture.drawio)**
+> （画像版 [`../docs/architecture.png`](../docs/architecture.png)）。draw.io で編集する。
+
 ## 前提
 
 - AWS 認証情報（プロファイル `hagauser1`）
@@ -62,3 +65,20 @@ AWS_PROFILE=hagauser1 npx cdk destroy
 ```
 
 > DynamoDB テーブルは import のため destroy では削除されない（意図どおり）。
+
+## アーキテクチャ図の更新
+
+構成図の元データは [`../docs/architecture.drawio`](../docs/architecture.drawio)（draw.io で編集）。
+README 等で表示している [`../docs/architecture.png`](../docs/architecture.png) は `.drawio` からの書き出し。
+図を編集したら、次のコマンドで PNG を書き出し直す（要 Docker 起動）:
+
+```sh
+# リポジトリルートで実行
+docker run --rm --shm-size=1g -v "$PWD/docs":/data \
+  rlespinasse/drawio-desktop-headless \
+  --no-sandbox --disable-gpu --export --format png --scale 2 --border 10 \
+  --output /data/architecture.png /data/architecture.drawio
+```
+
+> Docker を使わない場合は、draw.io デスクトップ / VS Code 拡張 `hediet.vscode-drawio` の
+> 「Export as PNG」でも同じ `docs/architecture.png` を上書き出力できる。

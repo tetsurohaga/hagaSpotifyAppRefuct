@@ -1,5 +1,9 @@
 # 02. アーキテクチャ
 
+> **正式なアーキテクチャ図（AWS構成図）は [`docs/architecture.drawio`](./architecture.drawio)。**
+> draw.io（[app.diagrams.net](https://app.diagrams.net) または VS Code 拡張 `hediet.vscode-drawio`）で開いて編集する。
+> 画像版は [`docs/architecture.png`](./architecture.png)（`.drawio` から書き出し）。下記 2.1 のテキスト図は概要把握用。
+
 ## 2.1 システム構成図
 
 ```

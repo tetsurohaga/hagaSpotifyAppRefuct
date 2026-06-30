@@ -1,0 +1,101 @@
+<mxfile host="app.diagrams.net" agent="Claude Code" version="24.0.0">
+  <diagram id="spotifyapp-arch" name="SpotifyApp Architecture">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="SpotifyApp — AWS アーキテクチャ図 (CDK: SpotifyAppStack)" style="text;html=1;align=left;verticalAlign=middle;fontSize=16;fontStyle=1;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="700" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Browser / User -->
+        <mxCell id="browser" value="ブラウザ&#10;(SvelteKit SPA)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.user;" vertex="1" parent="1">
+          <mxGeometry x="60" y="390" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- AWS Cloud group -->
+        <mxCell id="awscloud" value="AWS Cloud (ap-northeast-1 / SpotifyAppStack)" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud_alt;strokeColor=#232F3E;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#232F3E;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="180" y="80" width="620" height="560" as="geometry" />
+        </mxCell>
+
+        <!-- CloudFront -->
+        <mxCell id="cloudfront" value="CloudFront&#10;(単一ドメイン配信)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#8C4FFF;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudfront;" vertex="1" parent="awscloud">
+          <mxGeometry x="60" y="250" width="78" height="78" as="geometry" />
+        </mxCell>
+
+        <!-- S3 -->
+        <mxCell id="s3" value="S3 (静的サイト)&#10;非公開 / OAC 経由のみ" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#7AA116;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;" vertex="1" parent="awscloud">
+          <mxGeometry x="270" y="80" width="78" height="78" as="geometry" />
+        </mxCell>
+
+        <!-- Lambda -->
+        <mxCell id="lambda" value="Lambda (Node20 / TS・Hono)&#10;Function URL (authType=NONE)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;" vertex="1" parent="awscloud">
+          <mxGeometry x="270" y="300" width="78" height="78" as="geometry" />
+        </mxCell>
+
+        <!-- DynamoDB -->
+        <mxCell id="dynamodb" value="DynamoDB&#10;spotiapp_artists (import)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#C925D1;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.dynamodb;" vertex="1" parent="awscloud">
+          <mxGeometry x="470" y="70" width="78" height="78" as="geometry" />
+        </mxCell>
+
+        <!-- SSM Parameter Store -->
+        <mxCell id="ssm" value="SSM Parameter Store&#10;/hagawork/* (SecureString)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#E7157B;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.systems_manager;" vertex="1" parent="awscloud">
+          <mxGeometry x="470" y="230" width="78" height="78" as="geometry" />
+        </mxCell>
+
+        <!-- KMS -->
+        <mxCell id="kms" value="KMS&#10;(SecureString 復号)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#DD344C;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.key_management_service;" vertex="1" parent="awscloud">
+          <mxGeometry x="470" y="390" width="78" height="78" as="geometry" />
+        </mxCell>
+
+        <!-- External services box -->
+        <mxCell id="extbox" value="外部サービス (External APIs)" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;strokeColor=#5A6C86;fillColor=none;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontColor=#5A6C86;fontSize=12;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="620" y="660" width="320" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="spotify" value="Spotify Web API&#10;(OAuth / 再生中 / アーティスト)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1DB954;strokeColor=#137c39;fontColor=#ffffff;fontSize=12;" vertex="1" parent="extbox">
+          <mxGeometry x="30" y="30" width="250" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="claude" value="Claude API (Anthropic)&#10;アーティスト解説生成 + Web検索" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D97757;strokeColor=#a8512f;fontColor=#ffffff;fontSize=12;" vertex="1" parent="extbox">
+          <mxGeometry x="30" y="100" width="250" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Edges: front path -->
+        <mxCell id="e1" value="HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=classic;startArrow=classic;fontSize=11;" edge="1" parent="1" source="browser" target="cloudfront">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="デフォルト behavior (OAC)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=classic;fontSize=11;" edge="1" parent="1" source="cloudfront" target="s3">
+          <mxGeometry x="-0.2" relative="1" as="geometry"><mxPoint x="0" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="e3" value="/api/* — Function URL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=classic;fontSize=11;" edge="1" parent="1" source="cloudfront" target="lambda">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint x="0" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- Edges: Lambda fan-out (AWS) -->
+        <mxCell id="e4" value="GetItem / PutItem / UpdateItem" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.15;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=classic;fontSize=11;" edge="1" parent="1" source="lambda" target="dynamodb">
+          <mxGeometry x="0.4" relative="1" as="geometry"><mxPoint x="0" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="e5" value="GetParameter (WithDecryption)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.4;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=classic;fontSize=11;" edge="1" parent="1" source="lambda" target="ssm">
+          <mxGeometry x="0.4" relative="1" as="geometry"><mxPoint x="0" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="e6" value="kms:Decrypt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=classic;fontSize=11;" edge="1" parent="1" source="lambda" target="kms">
+          <mxGeometry x="0.4" relative="1" as="geometry"><mxPoint x="0" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- Edges: Lambda fan-out (External, downward) -->
+        <mxCell id="e7" value="OAuth / 再生中・アーティスト" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.7;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=classic;startArrow=classic;fontSize=11;" edge="1" parent="1" source="lambda" target="spotify">
+          <mxGeometry x="0.2" relative="1" as="geometry"><mxPoint x="0" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+        <mxCell id="e8" value="解説生成 + Web検索" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.4;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=classic;startArrow=classic;fontSize=11;" edge="1" parent="1" source="lambda" target="claude">
+          <mxGeometry x="0.2" relative="1" as="geometry"><mxPoint x="0" y="-10" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend" value="ポイント:&#10;・静的コンテンツと API を同一 CloudFront ドメインで配信 → httpOnly Cookie を SameSite=Lax で扱える / CORS 回避&#10;・S3 は非公開。OAC で CloudFront からのみ参照&#10;・Lambda は Function URL を CloudFront の /api/* オリジンに（最大60s 同期実行）&#10;・認証情報/APIキーは SSM SecureString に保管し Lambda が都度取得（KMS で復号）" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontColor=#232F3E;strokeColor=#999999;fillColor=#F5F5F5;rounded=1;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="700" width="540" height="120" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

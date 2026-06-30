@@ -2,6 +2,9 @@
 
 IaC は AWS CDK（TypeScript）。リージョンは ap-northeast-1。
 
+> **AWS構成図（正式版）は [`docs/architecture.drawio`](./architecture.drawio)**（画像版 [`architecture.png`](./architecture.png)）。
+> 本章の各リソースの全体関係はこの図を参照。図は draw.io で編集する。
+
 ## 6.1 AWS リソース一覧
 
 | リソース | 用途 | 備考 |

@@ -3,6 +3,14 @@
 Spotify の「現在再生中の曲」とそのアーティスト解説（生成AI）を表示する Web アプリ。
 既存 Flask 版を新スタックで作り直したもの。設計は [`docs/`](./docs/) 参照。
 
+## アーキテクチャ
+
+![AWS アーキテクチャ図](./docs/architecture.png)
+
+AWS 構成図。編集可能な元データは [`docs/architecture.drawio`](./docs/architecture.drawio)
+（[app.diagrams.net](https://app.diagrams.net) または VS Code 拡張 `hediet.vscode-drawio` で開く）。
+図を更新したら PNG を書き出し直す（手順は [`docs/architecture.drawio` の章末メモ / infra/README.md](./infra/README.md) 参照）。
+
 ## 構成（モノレポ）
 
 | ディレクトリ | 内容 | 技術 |
