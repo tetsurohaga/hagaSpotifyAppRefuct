@@ -1,6 +1,6 @@
 <script lang="ts">
-  // 再生中画面。縦1カラム構成（上から順に）:
-  //   Now Playing → Artist Info → Sticky Note（主役機能）→ Biography
+  // 再生中画面。縦1カラム構成。先頭に Now Playing、以降はアーティスト単位で
+  //   Artist Info → Sticky Note（主役機能）→ Biography のブロックを繰り返す。
   import { onMount } from "svelte";
   import { getCurrentlyPlaying, getArtistProfiles } from "$lib/api";
   import type { Track, Artist } from "$lib/types";
@@ -58,49 +58,36 @@
 <div class="container">
   <TrackPanel {track} loading={trackLoading} onrefresh={refresh} />
 
-  <div class="right-panel">
-    <div id="artist-title">Artist Info</div>
-    <div id="artist-info">
-      {#if artistsLoading}
-        <p>Searching...</p>
-      {:else if artistsError}
-        <p>{artistsError}</p>
-      {:else if artists.length === 0}
-        <p>No artist info.</p>
-      {:else}
-        {#each artists as artist (artist.id)}
-          <ArtistInfoCard {artist} />
-        {/each}
-      {/if}
-    </div>
-  </div>
+  {#if artistsLoading}
+    <p class="artists-status">Searching...</p>
+  {:else if artistsError}
+    <p class="artists-status">{artistsError}</p>
+  {:else if artists.length === 0}
+    <p class="artists-status">No artist info.</p>
+  {:else}
+    <!-- アーティスト単位で Artist Info → Sticky Note → Biography をひとまとまりに表示する。 -->
+    {#each artists as artist (artist.id)}
+      <section class="artist-block">
+        <div class="right-panel">
+          <div class="artist-title">Artist Info</div>
+          <div class="artist-info">
+            <ArtistInfoCard {artist} />
+          </div>
+        </div>
 
-  <!-- 主役機能：付箋ボード。Biography より上に、目立つ形で配置する。アーティスト単位。 -->
-  <section class="sticky-board">
-    <h2 class="sticky-title">Sticky Note</h2>
-    {#if artists.length === 0}
-      <p class="sticky-empty">再生中のアーティストがいません。</p>
-    {:else}
-      {#each artists as artist (artist.id)}
-        <StickyBoard {artist} showLabel={artists.length > 1} />
-      {/each}
-    {/if}
-  </section>
+        <!-- 主役機能：付箋ボード。Artist Info と Biography の間に目立つ形で配置する。 -->
+        <div class="sticky-board">
+          <h2 class="sticky-title">Sticky Note</h2>
+          <StickyBoard {artist} />
+        </div>
 
-  <div class="bio-panel">
-    <div id="bio-title">Biography</div>
-    <div id="bio-info">
-      {#if artistsLoading}
-        <p>Searching...</p>
-      {:else if artistsError}
-        <p>{artistsError}</p>
-      {:else if artists.length === 0}
-        <p>No artist info.</p>
-      {:else}
-        {#each artists as artist (artist.id)}
-          <ArtistBio {artist} />
-        {/each}
-      {/if}
-    </div>
-  </div>
+        <div class="bio-panel">
+          <div class="bio-title">Biography</div>
+          <div class="bio-info">
+            <ArtistBio {artist} />
+          </div>
+        </div>
+      </section>
+    {/each}
+  {/if}
 </div>

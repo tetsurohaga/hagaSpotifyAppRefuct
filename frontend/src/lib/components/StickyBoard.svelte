@@ -2,13 +2,11 @@
   // 付箋ボード（今回の主役機能）。アーティスト単位。
   // - 複数色から選んで 80 文字以内のメッセージを貼れる。
   // - 貼った付箋は DynamoDB（spotiapp_artists.sticky_notes）に永続化する。
-  // - 常にサンプル付箋を 2 つ配置（DB 非保存・削除不可）。
   // - 付箋エリアは横スクロール（画面に入りきらない数を貼れる）。
   import type { Artist, StickyNote } from "$lib/types";
   import { addStickyNote, deleteStickyNote } from "$lib/api";
 
-  let { artist, showLabel = false }: { artist: Artist; showLabel?: boolean } =
-    $props();
+  let { artist }: { artist: Artist } = $props();
 
   // 選択可能な付箋カラー（バックエンドの ALLOWED_COLORS と一致）。
   const COLORS = [
@@ -22,20 +20,6 @@
 
   const MAX_LEN = 80;
 
-  // 常に表示するサンプル付箋（DB 非保存・削除不可）。
-  const SAMPLES: StickyNote[] = [
-    {
-      id: "sample-1",
-      text: "sample：ABC の曲のプロデューサーが tom だと知って驚いた！",
-      color: "#ffe14d",
-    },
-    {
-      id: "sample-2",
-      text: "書いて欲しい内容：具体的なエピソードと感情, 気持ちが書かれているとvery good!!",
-      color: "#e3c8f5",
-    },
-  ];
-
   // DB から渡された付箋を初期値に取り込む（カードは artist.id でキー付けされ identity 安定）。
   // svelte-ignore state_referenced_locally
   let notes = $state<StickyNote[]>([...artist.stickyNotes]);
@@ -45,7 +29,6 @@
   let saving = $state(false);
 
   const remaining = $derived(MAX_LEN - draft.length);
-  const allNotes = $derived([...SAMPLES, ...notes]);
 
   async function addNote() {
     const text = draft.trim();
@@ -77,10 +60,6 @@
 </script>
 
 <div class="sticky-artist">
-  {#if showLabel}
-    <h3 class="sticky-artist-name">{artist.name}</h3>
-  {/if}
-
   <div class="sticky-composer">
     <textarea
       class="sticky-input"
@@ -119,16 +98,14 @@
   </div>
 
   <div class="sticky-scroll">
-    {#each allNotes as note (note.id)}
+    {#each notes as note (note.id)}
       <div class="sticky-note" style={`background:${note.color}`}>
-        {#if !note.id.startsWith("sample-")}
-          <button
-            type="button"
-            class="sticky-remove"
-            aria-label="付箋を削除"
-            onclick={() => removeNote(note.id)}>×</button
-          >
-        {/if}
+        <button
+          type="button"
+          class="sticky-remove"
+          aria-label="付箋を削除"
+          onclick={() => removeNote(note.id)}>×</button
+        >
         <p class="sticky-note-text">{note.text}</p>
       </div>
     {/each}

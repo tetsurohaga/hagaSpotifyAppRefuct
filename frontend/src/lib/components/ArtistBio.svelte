@@ -55,7 +55,7 @@
   </div>
 
   <button class="know-more-button" onclick={knowMore}>
-    Know More "{artist.name}"
+    Chat About "{artist.name}"
   </button>
   <button class="regenerate-button" onclick={regenerate} disabled={regenerating}>
     Regenerate biography "{artist.name}"
