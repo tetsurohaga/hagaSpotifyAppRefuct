@@ -32,9 +32,9 @@ export class SpotifyAppStack extends cdk.Stack {
       handler: "handler",
       depsLockFilePath: path.join(__dirname, "../../backend/package-lock.json"),
       memorySize: 512,
-      // Function URL 経由で同期実行する。Claude 解説生成の余裕として 60s に設定
+      // Function URL 経由で同期実行する。Claude 解説生成の余裕として 120s に設定
       // （CloudFront オリジン応答上限と合わせる）。
-      timeout: cdk.Duration.seconds(60),
+      timeout: cdk.Duration.seconds(120),
       environment: {
         ARTISTS_TABLE,
         SPOTIFY_SCOPE:
@@ -82,7 +82,7 @@ export class SpotifyAppStack extends cdk.Stack {
     );
 
     // --- Lambda Function URL: Lambda を直接公開（CloudFront の /api/* オリジン） ---
-    // 同期実行で最大 60s まで処理できるよう Function URL を採用。
+    // 同期実行で最大 120s まで処理できるよう Function URL を採用。
     // authType=NONE で公開し、アプリ側 Cookie 認証で保護する。
     const fnUrl = apiFn.addFunctionUrl({
       authType: lambda.FunctionUrlAuthType.NONE,
@@ -104,8 +104,8 @@ export class SpotifyAppStack extends cdk.Stack {
         "/api/*": {
           origin: new origins.HttpOrigin(apiDomain, {
             protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
-            // オリジン応答タイムアウトを最大の 60s に拡張（Claude 生成の余裕）。
-            readTimeout: cdk.Duration.seconds(60),
+            // オリジン応答タイムアウトを最大の 120s に拡張（Claude 生成の余裕）。
+            readTimeout: cdk.Duration.seconds(120),
           }),
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,

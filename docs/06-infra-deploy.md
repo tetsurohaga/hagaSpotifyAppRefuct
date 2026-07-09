@@ -11,7 +11,7 @@ IaC は AWS CDK（TypeScript）。リージョンは ap-northeast-1。
 | --- | --- | --- |
 | S3 バケット | SvelteKit 静的ビルド配置 | 非公開。OAC で CloudFront からのみ参照 |
 | CloudFront ディストリビューション | 配信・単一ドメイン化 | 標準ドメイン（`*.cloudfront.net`）でまず運用 |
-| Lambda 関数 | API（TypeScript/Hono） | Node.js 20、メモリ 256–512MB、タイムアウト 60s |
+| Lambda 関数 | API（TypeScript/Hono） | Node.js 20、メモリ 256–512MB、タイムアウト 120s |
 | Lambda Function URL | Lambda 公開 | CloudFront の `/api/*` オリジン（`authType=NONE`、Cookie 認証で保護） |
 | DynamoDB テーブル（既存） | `spotiapp_artists` | **import のみ**。新規作成しない |
 | SSM パラメータ（既存+新規） | シークレット | 下記 6.4 |
