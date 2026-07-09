@@ -29,3 +29,6 @@ npm-debug.log*
 
 # OS
 .DS_Store
+
+# 内部引き継ぎメモ（AWSアカウントID/URL/メール等を含むため公開しない・ローカル限定）
+docs/HANDOFF.md
