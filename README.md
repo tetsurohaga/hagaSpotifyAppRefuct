@@ -39,19 +39,6 @@ cd frontend && npm install && npm run dev     # http://localhost:5173
 
 型チェック: `backend` は `npm run typecheck`、`frontend` は `npm run check`。
 
-### clone 後に必須: 誤 push ガードの有効化
-
-業務リポジトリ / organization への誤 push を防ぐ pre-push フック（`.githooks/pre-push`）を同梱している。
-フック本体はリポジトリに含まれるが、**有効化は local 設定なので clone には引き継がれない。**
-新しい環境・再 clone 時は次の1コマンドで有効化すること。
-
-```sh
-git config --local core.hooksPath .githooks
-```
-
-フックは「push 先 URL に `tetsurohaga/` を含む」かつ「push 対象コミットのメールが
-`ypr7138@gmail.com` 完全一致」でなければ push を中断する。
-
 ## デプロイ
 
 [`infra/README.md`](./infra/README.md) を参照（要プロファイル `hagauser1`）。

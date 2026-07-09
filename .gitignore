@@ -32,3 +32,7 @@ npm-debug.log*
 
 # 内部引き継ぎメモ（AWSアカウントID/URL/メール等を含むため公開しない・ローカル限定）
 docs/HANDOFF.md
+
+# 誤 push ガード（個人メール/個人アカウント名を含むため公開しない・ローカル限定）
+# 有効化: git config --local core.hooksPath .githooks（手順は docs/HANDOFF.md 参照）
+.githooks/pre-push
