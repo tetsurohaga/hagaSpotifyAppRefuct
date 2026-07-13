@@ -83,12 +83,11 @@ export class SpotifyAppStack extends cdk.Stack {
 
     // --- Lambda Function URL: Lambda を直接公開（CloudFront の /api/* オリジン） ---
     // 同期実行で最大 120s まで処理できるよう Function URL を採用。
-    // authType=NONE で公開し、アプリ側 Cookie 認証で保護する。
+    // authType=AWS_IAM にして CloudFront OAC からの SigV4 署名付きリクエストのみ許可する
+    // （URL を直接叩かれても 403。アプリ側 Cookie 認証と二重に保護）。
     const fnUrl = apiFn.addFunctionUrl({
-      authType: lambda.FunctionUrlAuthType.NONE,
+      authType: lambda.FunctionUrlAuthType.AWS_IAM,
     });
-    // CloudFront オリジン用にホスト名のみ取り出す（"https://" と末尾 "/" を除去）。
-    const apiDomain = cdk.Fn.select(2, cdk.Fn.split("/", fnUrl.url));
 
     // --- CloudFront: 単一ドメイン。デフォルト→S3、/api/*→Lambda Function URL ---
     const distribution = new cloudfront.Distribution(this, "Distribution", {
@@ -102,8 +101,9 @@ export class SpotifyAppStack extends cdk.Stack {
       },
       additionalBehaviors: {
         "/api/*": {
-          origin: new origins.HttpOrigin(apiDomain, {
-            protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
+          // OAC 付き Function URL オリジン。OAC の作成・CloudFront への
+          // lambda:InvokeFunctionUrl 付与・オリジン紐付けを CDK が自動で行う。
+          origin: origins.FunctionUrlOrigin.withOriginAccessControl(fnUrl, {
             // オリジン応答タイムアウトを最大の 120s に拡張（Claude 生成の余裕）。
             readTimeout: cdk.Duration.seconds(120),
           }),
