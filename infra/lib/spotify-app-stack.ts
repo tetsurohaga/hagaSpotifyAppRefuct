@@ -27,7 +27,7 @@ export class SpotifyAppStack extends cdk.Stack {
 
     // --- Lambda: backend(TypeScript/Hono) を esbuild バンドル ---
     const apiFn = new NodejsFunction(this, "ApiFunction", {
-      runtime: lambda.Runtime.NODEJS_20_X,
+      runtime: lambda.Runtime.NODEJS_24_X,
       entry: path.join(__dirname, "../../backend/src/index.ts"),
       handler: "handler",
       depsLockFilePath: path.join(__dirname, "../../backend/package-lock.json"),
@@ -43,7 +43,7 @@ export class SpotifyAppStack extends cdk.Stack {
       },
       bundling: {
         format: OutputFormat.ESM,
-        target: "node20",
+        target: "node24",
         minify: false,
         // ESM 出力で一部 CJS 依存が require/__dirname を参照する場合の保険。
         banner:
