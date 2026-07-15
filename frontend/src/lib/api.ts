@@ -10,6 +10,20 @@ function toLogin(): null {
   return null;
 }
 
+// CloudFront OAC + Lambda Function URL(AWS_IAM) 経由では、ボディ付き(POST/PUT)
+// リクエストのボディは CloudFront が署名してくれない。クライアント側でボディの
+// SHA256(16進) を x-amz-content-sha256 に載せないと Function URL の署名検証が
+// 失敗して 403 になる（それを CloudFront のエラーページ設定が index.html にすり替え、
+// フロントで JSON パースが "Unexpected token '<'" になる）。
+// 参考: docs.aws.amazon.com/AmazonCloudFront/.../private-content-restricting-access-to-lambda.html
+async function sha256Hex(body: string): Promise<string> {
+  const bytes = new TextEncoder().encode(body);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
 export async function getCurrentlyPlaying(): Promise<Track | null> {
   const r = await fetch("/api/currently-playing", opts);
   if (r.status === 204) return null;
@@ -61,11 +75,16 @@ export async function addStickyNote(
   text: string,
   color: string,
 ): Promise<StickyNote | null> {
+  const body = JSON.stringify({ artist_id: artistId, text, color });
   const r = await fetch("/api/sticky-notes", {
     ...opts,
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ artist_id: artistId, text, color }),
+    headers: {
+      "Content-Type": "application/json",
+      // OAC 経由のボディ付きリクエストに必須（上記 sha256Hex のコメント参照）。
+      "x-amz-content-sha256": await sha256Hex(body),
+    },
+    body,
   });
   if (r.status === 401) return toLogin();
   if (!r.ok) throw new Error(`sticky-notes POST: ${r.status}`);
