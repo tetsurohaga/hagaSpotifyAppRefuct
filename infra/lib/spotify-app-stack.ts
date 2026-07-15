@@ -89,6 +89,27 @@ export class SpotifyAppStack extends cdk.Stack {
       authType: lambda.FunctionUrlAuthType.AWS_IAM,
     });
 
+    // --- CloudFront Function: SPA ルーティング（S3 ビヘイビア専用） ---
+    // adapter-static は純 SPA（fallback: index.html）。/now-playing 等のルートは
+    // S3 にキーが無いので、拡張子を持たないパスはアプリシェル（/index.html）へ
+    // 書き換える。ビヘイビア単位で付与するため /api/* には一切かからず、API の
+    // 403/404 をディストリビューション全体のカスタムエラーで index.html(200) に
+    // すり替えてしまう問題を避けられる。
+    const spaRouter = new cloudfront.Function(this, "SpaRouter", {
+      runtime: cloudfront.FunctionRuntime.JS_2_0,
+      code: cloudfront.FunctionCode.fromInline(`
+function handler(event) {
+  var request = event.request;
+  // 拡張子付き（/_app/*.js, /favicon.ico, /fonts/*.otf 等）は実ファイルとして素通し。
+  // それ以外（/, /now-playing 等のクライアントルート）はアプリシェルを返す。
+  if (!request.uri.includes('.')) {
+    request.uri = '/index.html';
+  }
+  return request;
+}
+`),
+    });
+
     // --- CloudFront: 単一ドメイン。デフォルト→S3、/api/*→Lambda Function URL ---
     const distribution = new cloudfront.Distribution(this, "Distribution", {
       defaultRootObject: "index.html",
@@ -98,6 +119,12 @@ export class SpotifyAppStack extends cdk.Stack {
           cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
         compress: true,
+        functionAssociations: [
+          {
+            function: spaRouter,
+            eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
+          },
+        ],
       },
       additionalBehaviors: {
         "/api/*": {
@@ -116,19 +143,9 @@ export class SpotifyAppStack extends cdk.Stack {
             cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
         },
       },
-      // SPA フォールバック: S3 に無いパス（/now-playing 等）は index.html を 200 で返す。
-      errorResponses: [
-        {
-          httpStatus: 403,
-          responseHttpStatus: 200,
-          responsePagePath: "/index.html",
-        },
-        {
-          httpStatus: 404,
-          responseHttpStatus: 200,
-          responsePagePath: "/index.html",
-        },
-      ],
+      // SPA フォールバックは上記 SpaRouter（S3 ビヘイビア専用の CloudFront Function）で
+      // 行う。ディストリビューション全体のカスタムエラーレスポンスは使わない
+      // （/api/* の 403/404 を index.html(200) にすり替えないため）。
     });
 
     // --- フロントビルドを S3 へ配置 + CloudFront invalidation ---
