@@ -44,8 +44,3 @@ cd frontend && npm install && npm run dev     # http://localhost:5173
 [`infra/README.md`](./infra/README.md) を参照（要プロファイル `hagauser1`）。
 概略: `frontend` をビルド → `cdk deploy` → CloudFront ドメイン確定 →
 `SPOTIFY_REDIRECT_URI` を SSM 設定 → Spotify ダッシュボードに Redirect URI 登録。
-
-## 既存版との主な差分
-
-Perplexity → Claude、プレーンテキスト → Markdown、Flask 常駐 → サーバレス、
-Jinja テンプレート → SvelteKit SPA（S3+CloudFront 配信）。

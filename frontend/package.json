@@ -22,5 +22,8 @@
   "dependencies": {
     "dompurify": "^3.4.11",
     "marked": "^14.1.2"
+  },
+  "overrides": {
+    "cookie": "^0.7.0"
   }
 }
