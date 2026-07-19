@@ -113,6 +113,7 @@ function handler(event) {
     // --- CloudFront: 単一ドメイン。デフォルト→S3、/api/*→Lambda Function URL ---
     const distribution = new cloudfront.Distribution(this, "Distribution", {
       defaultRootObject: "index.html",
+      geoRestriction: cloudfront.GeoRestriction.allowlist("JP"),
       defaultBehavior: {
         origin: origins.S3BucketOrigin.withOriginAccessControl(siteBucket),
         viewerProtocolPolicy:
