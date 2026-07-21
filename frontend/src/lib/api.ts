@@ -69,6 +69,30 @@ export async function regenerateBiography(
   return ((await r.json()) as { new_biography: string }).new_biography;
 }
 
+// 手編集した解説を保存する。保存後の本文を返す。
+export async function saveBiography(
+  id: string,
+  biography: string,
+): Promise<string> {
+  const body = JSON.stringify({ artist_id: id, biography });
+  const r = await fetch("/api/biography", {
+    ...opts,
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      // OAC 経由のボディ付きリクエストに必須（下記 sha256Hex のコメント参照）。
+      "x-amz-content-sha256": await sha256Hex(body),
+    },
+    body,
+  });
+  if (r.status === 401) {
+    toLogin();
+    return "";
+  }
+  if (!r.ok) throw new Error(`biography PUT: ${r.status}`);
+  return ((await r.json()) as { biography: string }).biography;
+}
+
 // 付箋を1枚追加し、サーバが採番したノート（id 付き）を返す。
 export async function addStickyNote(
   artistId: string,

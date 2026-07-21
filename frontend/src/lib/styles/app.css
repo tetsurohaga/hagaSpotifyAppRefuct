@@ -201,6 +201,57 @@ button.regenerate-button:hover {
     background-color: #fdb8eb; /* ホバー時に色を少し暗く */
 }
 
+/* 解説の手編集用ボタン（edit / save / cancel）。既存ボタンと同じ形で色だけ変える。 */
+button.edit-button,
+button.save-button,
+button.cancel-button {
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    width: auto;
+}
+
+button.edit-button { background-color: #0d8ed2; }
+button.edit-button:hover { background-color: #6fc2f0; }
+button.save-button { background-color: #1db954; }
+button.save-button:hover { background-color: #57d98a; }
+button.cancel-button { background-color: #777; }
+button.cancel-button:hover { background-color: #aaa; }
+
+button.edit-button:disabled,
+button.save-button:disabled,
+button.cancel-button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+/* 解説の編集エリア。Markdown をそのまま書けるよう等幅・左寄せ。 */
+textarea.bio-editor {
+    width: min(640px, 90vw);
+    box-sizing: border-box;
+    padding: 10px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: left;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical;
+}
+
+p.bio-error {
+    color: #d33;
+    font-size: 14px;
+    margin: 5px 0 0;
+}
+
 body.login-page {
     display: flex;
     justify-content: center;

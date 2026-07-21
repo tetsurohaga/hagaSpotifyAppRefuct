@@ -1,6 +1,7 @@
 // GET /api/artist-profile        — 再生中の各アーティスト情報を返す（解説はキャッシュ分のみ即返却）
 // GET /api/generate-biography     — 未生成アーティストの解説を1人ぶん生成（async 化のためフロントから個別呼び出し）
 // GET /api/regenerate-biography   — 指定アーティストの解説を再生成（既存 /regenerate_biography 移植）
+// PUT /api/biography              — 解説を手で編集した内容で上書き（body: { artist_id, biography }）
 
 import { Hono } from "hono";
 import { requireAuth, type AppVariables } from "../lib/auth.js";
@@ -110,4 +111,31 @@ artistProfileRoutes.get("/regenerate-biography", async (c) => {
   await updateBiography(artistId, biography, timestamp);
 
   return c.json({ new_biography: biography });
+});
+
+// 手編集した解説の保存。生成物と同じ属性（biography）を上書きするだけで、
+// 再生成すればこの手編集は消える（既存の regenerate の挙動どおり）。
+const MAX_BIOGRAPHY_LEN = 20000;
+
+artistProfileRoutes.put("/biography", async (c) => {
+  const body = await c.req.json().catch(() => null);
+  const artistId = typeof body?.artist_id === "string" ? body.artist_id : "";
+  const biography = typeof body?.biography === "string" ? body.biography : null;
+
+  if (!artistId) return c.json({ error: "Missing artist_id" }, 400);
+  if (biography === null) return c.json({ error: "Missing biography" }, 400);
+  if (biography.trim() === "") return c.json({ error: "Empty biography" }, 400);
+  if (biography.length > MAX_BIOGRAPHY_LEN) {
+    return c.json({ error: `Biography exceeds ${MAX_BIOGRAPHY_LEN} chars` }, 400);
+  }
+
+  // 未登録アーティストに対する更新は作らない（Update の upsert を避ける）。
+  if ((await getBiography(artistId)) === null) {
+    return c.json({ error: "Artist not found" }, 404);
+  }
+
+  const timestamp = String(Math.floor(Date.now() / 1000));
+  await updateBiography(artistId, biography, timestamp);
+
+  return c.json({ biography });
 });
